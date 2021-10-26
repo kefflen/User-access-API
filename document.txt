@@ -1,0 +1,28 @@
+Tabelas
+Users:
+  username
+  password
+  created_at
+
+User_permissions
+  user_id
+  permission_id
+
+Permission
+  name
+  description
+  created_at
+
+User_roles
+  user_id
+  role_id
+
+Roles
+  name
+  description
+  created_at
+
+Permission_roles
+  role_id
+  permission_id
+
