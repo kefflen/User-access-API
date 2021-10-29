@@ -1,9 +1,9 @@
 import { CreateUserController } from "../../controllers/CreateUserController"
-import { UserRepository } from "../../repositories/userRepository"
 import { CreateUserService } from "../../services/CreateUserService"
+import { makeUserRepository } from "./makeUserRepository"
 
 export const createUserControllerFactory = () => {
-  const userRepository = new UserRepository()
+  const userRepository = makeUserRepository()
   const createUserService = new CreateUserService(userRepository)
   return new CreateUserController(createUserService)
 }
