@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { makeUserRepository } from "../config/factories/makeUserRepository";
 
-
+//TODO Pegar as permissões pelas 'roles'
 export function can(permissionsRoutes: string[]) {
   return async (request: Request, response: Response, next: NextFunction) => {
     const userRepository = makeUserRepository()
