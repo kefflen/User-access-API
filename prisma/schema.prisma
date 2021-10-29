@@ -53,7 +53,7 @@ model User_roles {
 }
 
 model Roles_permission {
-  user         Roles      @relation(fields: [rolesId], references: [id])
+  roles        Roles      @relation(fields: [rolesId], references: [id])
   rolesId      String
   permission   Permission @relation(fields: [permissionId], references: [id])
   permissionId String

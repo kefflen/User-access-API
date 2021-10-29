@@ -1,5 +1,5 @@
 import { AppError } from "../errors/AppError";
-import { UserRepository } from "../repositories/userRepository";
+import { UserRepository } from "../repositories/UserRepository";
 import bcryptjs from 'bcryptjs'
 
 type CreateUserRequest = {

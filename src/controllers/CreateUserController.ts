@@ -7,7 +7,7 @@ class CreateUserController {
     private readonly createUserServive: CreateUserService
   ) {}
 
-  async handle(request: Request, response: Response) {
+  handle = async (request: Request, response: Response) => {
     const { username, email, password } = request.body
     if (!username) return response.status(400).send("Need to pass a usename valid")
     if (!email) return response.status(400).send("Need to pass a email valid")
