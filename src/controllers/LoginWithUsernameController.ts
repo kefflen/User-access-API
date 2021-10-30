@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AppError } from "../errors/AppError";
-import { LoginWithUsernameUserService } from "../services/LoginWithUsernameUserService";
+import { LoginWithUsernameUserService } from "../domain/services/LoginWithUsernameUserService";
 
 class LoginWithUsernameUserController {
   constructor(

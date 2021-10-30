@@ -1,6 +1,6 @@
-import { AppError } from "../errors/AppError";
-import { UserRepository } from "../repositories/UserRepository";
-import { TokenVerificator } from "../utils/TokenVerificator";
+import { AppError } from "../../errors/AppError";
+import { UserRepository } from "../../repositories/UserRepository";
+import { TokenVerificator } from "../../utils/TokenVerificator";
 
 
 export class LoginWithUsernameUserService {

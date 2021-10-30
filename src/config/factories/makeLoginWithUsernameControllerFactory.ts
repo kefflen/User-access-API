@@ -1,6 +1,6 @@
 import { LoginWithUsernameUserController } from "../../controllers/LoginWithUsernameController";
 import { UserRepository } from "../../repositories/UserRepository";
-import { LoginWithUsernameUserService } from "../../services/LoginWithUsernameUserService";
+import { LoginWithUsernameUserService } from "../../domain/services/LoginWithUsernameUserService";
 import { TokenVerificator } from "../../utils/TokenVerificator";
 
 export function makeLoginWithUsernameControllerFactory() {
