@@ -16,6 +16,6 @@ export class LoginWithUsernameUserService {
     const isIncorrectPassword = !(await this.tokenVerificator.verify(password, user.password))
     if (isIncorrectPassword) throw new AppError("Não existe esse usuario no sistema ou senha invalida", 400)
 
-    return user
+    return {id: user.id, username: user.username, email: user.email}
   }
 }
