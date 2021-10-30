@@ -75,7 +75,6 @@ class UserRepository implements IUserRepository {
     for (let rolePermission of rolesArraysPermissions) {
       rolesPermissions.concat(rolePermission)
     }
-    console.log({userPermissions, rolesPermissions})
     const { id, email, username, password } = userDataWithRoleAndPermissions
     return new UserPermissions(id, email, username, password, [...userPermissions, ...rolesPermissions])
   }
