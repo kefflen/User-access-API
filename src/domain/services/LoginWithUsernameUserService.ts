@@ -1,14 +1,14 @@
 import { AppError } from "../../errors/AppError";
 import { UserRepository } from "../../repositories/UserRepository";
-import { JwtAuthToken } from "../../utils/JwtAuthToken";
-import { TokenVerificator } from "../../utils/TokenVerificator";
+import { IJwtAuthToken } from "../ports/IJwtAuthToken";
+import { ITokenVerificator } from "../ports/ITokenVerificator";
 
 
 export class LoginWithUsernameUserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly tokenVerificator: TokenVerificator,
-    private readonly jwtAuthToken: JwtAuthToken
+    private readonly tokenVerificator: ITokenVerificator,
+    private readonly jwtAuthToken: IJwtAuthToken
   ) {}
 
   async execute(username: string, password: string) {
