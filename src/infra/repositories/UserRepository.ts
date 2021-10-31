@@ -1,7 +1,6 @@
-import { prismaClient } from "../config/primas"
-import { Permission } from "../domain/entities"
-import { User, UserPermissions } from "../domain/entities/User"
-import { IUserRepository } from "../domain/repositories/IUserRepository"
+import { prismaClient } from "../../config/primas"
+import { Permission, User, UserPermissions } from "../../domain/entities"
+import { IUserRepository } from "../../domain/repositories/IUserRepository"
 
 type CreateUserParams = {
   username: string, email: string, password: string

@@ -1,5 +1,5 @@
 import { Roles_permission } from ".prisma/client";
-import { prismaClient } from "../config/primas";
+import { prismaClient } from "../../config/primas";
 
 class RolesRepository {
 

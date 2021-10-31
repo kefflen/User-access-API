@@ -1,5 +1,5 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
-import { UserRepository } from "../../repositories/UserRepository";
+import { UserRepository } from "../../infra/repositories/UserRepository";
 
 export function makeUserRepository(): IUserRepository {
 

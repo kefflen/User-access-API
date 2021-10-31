@@ -1,8 +1,8 @@
 import { LoginWithUsernameUserController } from "../../controllers/LoginWithUsernameController";
-import { UserRepository } from "../../repositories/UserRepository";
 import { LoginWithUsernameUserService } from "../../domain/services/LoginWithUsernameUserService";
 import { TokenVerificator } from "../../utils/TokenVerificator";
 import { JwtAuthToken } from "../../utils/JwtAuthToken";
+import { UserRepository } from "../../infra/repositories/UserRepository";
 
 export function makeLoginWithUsernameControllerFactory() {
   const repository = new UserRepository()

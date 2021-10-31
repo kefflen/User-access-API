@@ -1,12 +1,12 @@
 import { AppError } from "../../errors/AppError";
-import { UserRepository } from "../../repositories/UserRepository";
 import { IJwtAuthToken } from "../ports/IJwtAuthToken";
 import { ITokenVerificator } from "../ports/ITokenVerificator";
+import { IUserRepository } from "../repositories/IUserRepository";
 
 
 export class LoginWithUsernameUserService {
   constructor(
-    private readonly userRepository: UserRepository,
+    private readonly userRepository: IUserRepository,
     private readonly tokenVerificator: ITokenVerificator,
     private readonly jwtAuthToken: IJwtAuthToken
   ) {}
