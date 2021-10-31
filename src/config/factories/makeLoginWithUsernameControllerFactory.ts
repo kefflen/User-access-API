@@ -1,6 +1,6 @@
 import { LoginWithUsernameUserController } from "../../controllers/LoginWithUsernameController";
 import { LoginWithUsernameUserService } from "../../domain/services/LoginWithUsernameUserService";
-import { TokenVerificator } from "../../utils/TokenVerificator";
+import { TokenVerificator } from "../../utils/EncryptServices";
 import { JwtAuthToken } from "../../utils/JwtAuthToken";
 import { UserRepository } from "../../infra/repositories/UserRepository";
 
