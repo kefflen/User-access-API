@@ -3,9 +3,9 @@ import { Permission } from './Permission'
 export class User {
   constructor(
     public readonly id: string,
-    public readonly username: string,
-    public readonly email: string,
-    public readonly password: string,
+    public username: string,
+    public email: string,
+    public password: string,
   ) {}
 }
 

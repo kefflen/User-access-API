@@ -2,8 +2,8 @@
 export class Permission {
   constructor(
     public readonly id: string,
-    public readonly name: string,
-    public readonly description: string,
+    public name: string,
+    public description: string,
     public readonly createdAt: Date
   ) {}
 }
