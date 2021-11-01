@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppError } from "../errors/AppError";
+import { AppError } from "../domain/errors/AppError";
 import { LoginWithUsernameUserService } from "../domain/services/LoginWithUsernameUserService";
 
 class LoginWithUsernameUserController {

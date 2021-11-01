@@ -1,4 +1,4 @@
-import { AppError } from "../../errors/AppError";
+import { AppError } from "../errors/AppError";
 import { IEncryptServices } from "../ports/IEncryptServices";
 import { IUserRepository } from "../repositories/IUserRepository";
 

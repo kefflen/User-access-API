@@ -1,4 +1,4 @@
-import { AppError } from "../../errors/AppError";
+import { AppError } from "../errors/AppError";
 import bcryptjs from 'bcryptjs'
 import { IUserRepository } from "../repositories/IUserRepository";
 

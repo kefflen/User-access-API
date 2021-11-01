@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { IJwtAuthToken, UserPayload } from '../domain/ports/IJwtAuthToken'
-import { AppError } from '../errors/AppError'
+import { AppError } from '../domain/errors/AppError'
 
 export class JwtAuthToken implements IJwtAuthToken {
   private readonly secret: string
