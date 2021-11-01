@@ -10,10 +10,7 @@ type CreateUserParams = {
 }
 
 class UserRepository implements IUserRepository {
-  permissionRepository: IPermissionRepository
-  constructor() {
-    this.permissionRepository = new PermissionRepository()
-  }
+  private readonly permissionRepository: IPermissionRepository = new PermissionRepository()
   async create({username, email, password}: CreateUserParams) {
     return await prismaClient.user.create({
       data: {
@@ -56,11 +53,7 @@ class UserRepository implements IUserRepository {
     const { id, username, email, password } = userData
     const user = new User(id, username, email, password)
     const userPermissions = await this.permissionRepository.getByUser(user)
-    const rolesRepository = new RolesRepository()
-    const roles = await rolesRepository.getByUser(user)
-    
-    const userPermissionsIdsSet = new Set(userPermissions.map(permission => permission.id))
-    const rolesPermissions = await this.getPermissionsFromRoles(roles, userPermissionsIdsSet)
+    const rolesPermissions = await this.getPermissionsOfUserRoles(user, userPermissions)
 
     const userWithPermissions = new UserPermissions(id, username, email, password, [...userPermissions, ...rolesPermissions])
     return userWithPermissions
@@ -92,6 +85,40 @@ class UserRepository implements IUserRepository {
     return users
   }
 
+  async addPermissions(userId: string, permissionsIds: string[]) {
+    const allPermissionIdsExist = await this.permissionRepository.allPermissionIdsExist(permissionsIds)
+    if (!allPermissionIdsExist) return null
+
+    for (let permissionId of permissionsIds) {
+      await prismaClient.user_permissions.create({
+        data: {
+          userId: userId, permissionId
+        },
+      })
+    }
+
+    return await this.getByIdWithPermissions(userId)
+  }
+
+  async removePermissions(userId: string, permissionsIds: string[]) {
+    for (let permissionId of permissionsIds) {
+      await prismaClient.user_permissions.delete({
+        where: { userId_permissionId: {permissionId, userId}}
+      })
+    }
+
+    return await this.getByIdWithPermissions(userId)
+  }
+
+  private async getPermissionsOfUserRoles(user: User, userPermissions: Permission[]) {
+    const rolesRepository = new RolesRepository()
+    const roles = await rolesRepository.getByUser(user)
+
+    const userPermissionsIdsSet = new Set(userPermissions.map(permission => permission.id))
+    const rolesPermissions = await this.getPermissionsFromRoles(roles, userPermissionsIdsSet)
+    return rolesPermissions
+  }
+
   private async getPermissionsFromRoles(roles: Role[], alreadyCollectedIds= new Set<string>()): Promise<Permission[]> {
     const result: Permission[] = []
     const permissionIdsSet = new Set(alreadyCollectedIds)
@@ -106,6 +133,7 @@ class UserRepository implements IUserRepository {
     }
     return result
   }
+
 }
 
 export {

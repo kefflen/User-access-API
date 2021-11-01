@@ -7,4 +7,6 @@ export interface IRoleRepository {
   getByIdWithPermissions(roleId: string): Promise<RolePermissions|null>
   getByPermission(permission: Permission): Promise<Role[]>
   getByUser(user: User): Promise<Role[]>
+  addPermissions(roleId: string, permissionsIds: string[]): Promise<RolePermissions|null>
+  removePermissions(roleId: string, permissionsIds: string[]): Promise<RolePermissions|null>
 }

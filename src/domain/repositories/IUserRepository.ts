@@ -13,4 +13,6 @@ export interface IUserRepository {
   getByIdWithPermissions(id: string): Promise<UserPermissions|null>
   getByPermission(permission: Permission): Promise<User[]>
   getByRole(role: Role): Promise<User[]>
+  addPermissions(userId: string, permissionsIds: string[]): Promise<UserPermissions|null>
+  removePermissions(userId: string, permissionsIds: string[]): Promise<UserPermissions|null>
 }

@@ -47,4 +47,11 @@ export class PermissionRepository implements IPermissionRepository {
     return permissions
   }
 
+  async allPermissionIdsExist(permissionsIds: string[]) {
+    const permissions = []
+    for (let permissionId of permissionsIds) {
+      permissions.push(await this.getById(permissionId))
+    }
+    return permissions.every(Boolean)
+  }
 }

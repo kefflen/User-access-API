@@ -1,8 +1,10 @@
 import { prismaClient } from "../../config/primas";
 import { Permission, Role, RolePermissions, User } from "../../domain/entities";
 import { IRoleRepository } from "../../domain/repositories/IRoleRepository";
+import { PermissionRepository } from "./PermissionRepository";
 
 class RolesRepository implements IRoleRepository {
+  private readonly permissionRepository = new PermissionRepository()
   async getById(roleId: string){
     const roleData = await prismaClient.roles.findUnique({
       where: {id: roleId}
@@ -64,6 +66,33 @@ class RolesRepository implements IRoleRepository {
       .map(roleData => new Role({ id: roleData.id, name: roleData.name, description: roleData.description, createdAt: roleData.created_at}))
 
     return roles
+  }
+
+  async addPermissions(roleId: string, permissionsIds: string[]) {
+
+    const allPermissionIdsExist = this.permissionRepository.allPermissionIdsExist(permissionsIds)
+    
+    if (!allPermissionIdsExist) return null
+
+    for (let permissionId of permissionsIds) {
+      await prismaClient.roles_permission.create({
+        data: {
+          rolesId: roleId, permissionId
+        },
+      })
+    }
+
+    return await this.getByIdWithPermissions(roleId)
+  }
+
+  async removePermissions(roleId: string, permissionsIds: string[]) {
+    for (let permissionId of permissionsIds) {
+      await prismaClient.roles_permission.delete({
+        where: { rolesId_permissionId: {permissionId, rolesId: roleId}}
+      })
+    }
+
+    return await this.getByIdWithPermissions(roleId)
   }
 }
 
