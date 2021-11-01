@@ -27,9 +27,7 @@ export class PermissionRepository implements IPermissionRepository {
       select: {permission: true}
     })
 
-    const permissions = rolePermissionData
-      .map(objWithPermission => objWithPermission.permission)
-      .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
+    const permissions = this.permissionFromData(rolePermissionData)
     
       return permissions
   }
@@ -39,10 +37,7 @@ export class PermissionRepository implements IPermissionRepository {
       where: { userId: user.id},
       select: { permission: true }
     })
-
-    const permissions = rolesUserData
-      .map(objWithPermission => objWithPermission.permission)
-      .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
+    const permissions = this.permissionFromData(rolesUserData)
 
     return permissions
   }
@@ -53,5 +48,11 @@ export class PermissionRepository implements IPermissionRepository {
       permissions.push(await this.getById(permissionId))
     }
     return permissions.every(Boolean)
+  }
+
+  private permissionFromData(rolePermissionData: {permission: {id: string, name: string, description: string, created_at: Date}}[]) {
+    return rolePermissionData
+      .map(objWithPermission => objWithPermission.permission)
+      .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at));
   }
 }
