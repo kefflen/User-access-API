@@ -1,12 +1,19 @@
 import { prismaClient } from "../../config/primas"
-import { Permission, User, UserPermissions } from "../../domain/entities"
+import { Permission, Role, User, UserPermissions } from "../../domain/entities"
+import { IPermissionRepository } from "../../domain/repositories/IPermissionRepository"
 import { IUserRepository } from "../../domain/repositories/IUserRepository"
+import { PermissionRepository } from "./PermissionRepository"
+import { RolesRepository } from "./RolesRepository"
 
 type CreateUserParams = {
   username: string, email: string, password: string
 }
 
 class UserRepository implements IUserRepository {
+  permissionRepository: IPermissionRepository
+  constructor() {
+    this.permissionRepository = new PermissionRepository()
+  }
   async create({username, email, password}: CreateUserParams) {
     return await prismaClient.user.create({
       data: {
@@ -41,43 +48,66 @@ class UserRepository implements IUserRepository {
   }
 
   async getByIdWithPermissions(dataId: string): Promise<UserPermissions | null> {
-    const userDataWithRoleAndPermissions = await prismaClient.user.findUnique({
-      where: { id: dataId },
-      include: {
-        User_permissions: {
-          include: {
-            permission: true
-          }
-        },
-        User_roles: {
-          include: {
-            roles: {include: {Roles_permission: {include: {permission: true}}}
-            }
-          }
-        }
-      }
+    const userData = await prismaClient.user.findUnique({
+      where: { id: dataId }
     })
 
-    if (!userDataWithRoleAndPermissions) return null
+    if (!userData) return null
+    const { id, username, email, password } = userData
+    const user = new User(id, username, email, password)
+    const userPermissions = await this.permissionRepository.getByUser(user)
+    const rolesRepository = new RolesRepository()
+    const roles = await rolesRepository.getByUser(user)
     
+    const userPermissionsIdsSet = new Set(userPermissions.map(permission => permission.id))
+    const rolesPermissions = await this.getPermissionsFromRoles(roles, userPermissionsIdsSet)
 
-    const userPermissions = userDataWithRoleAndPermissions.User_permissions.map(
-      userPermission => userPermission.permission
-    ).map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
+    const userWithPermissions = new UserPermissions(id, username, email, password, [...userPermissions, ...rolesPermissions])
+    return userWithPermissions
+  }
 
-    const rolesArraysPermissions = userDataWithRoleAndPermissions.User_roles.map(
-      userRoles => userRoles.roles.Roles_permission.map(rolePermission => rolePermission.permission)
-        .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
-    )
+  async getByPermission(permission: Permission): Promise<User[]> {
+    const userPermissionData = await prismaClient.user_permissions.findMany({
+      where: { permissionId: permission.id },
+      select: { user: true }
+    })
 
-    const rolesPermissions: Permission[] = []
-    for (let rolePermission of rolesArraysPermissions) {
-      rolesPermissions.concat(rolePermission)
+    const users = userPermissionData
+      .map(objWithUser => objWithUser.user)
+      .map(userData => new User(userData.id, userData.username, userData.email, userData.password))
+    
+    return users
+  }
+
+  async getByRole(role: Role): Promise<User[]> {
+    const userPermissionData = await prismaClient.user_roles.findMany({
+      where: { rolesId: role.id },
+      select: { user: true }
+    })
+
+    const users = userPermissionData
+      .map(objWithUser => objWithUser.user)
+      .map(userData => new User(userData.id, userData.username, userData.email, userData.password))
+    
+    return users
+  }
+
+  private async getPermissionsFromRoles(roles: Role[], alreadyCollectedIds= new Set<string>()): Promise<Permission[]> {
+    const result: Permission[] = []
+    const permissionIdsSet = new Set(alreadyCollectedIds)
+    for (let role of roles) {
+      const rolePermissions = await this.permissionRepository.getByRole(role)
+      for (let permission of rolePermissions) {
+        if (!permissionIdsSet.has(permission.id)) {
+          result.push(permission)
+          permissionIdsSet.add(permission.id)
+        }
+      }
     }
-    const { id, email, username, password } = userDataWithRoleAndPermissions
-    return new UserPermissions(id, email, username, password, [...userPermissions, ...rolesPermissions])
+    return result
   }
 }
+
 export {
   UserRepository
 }

@@ -1,5 +1,5 @@
 import { prismaClient } from "../../config/primas";
-import { Permission } from "../../domain/entities";
+import { Permission, Role, User } from "../../domain/entities";
 import { IPermissionRepository } from "../../domain/repositories/IPermissionRepository";
 
 export class PermissionRepository implements IPermissionRepository {
@@ -11,6 +11,7 @@ export class PermissionRepository implements IPermissionRepository {
     const { id, name, description, created_at } = permissionData
     return new Permission(id, name, description, created_at)
   }
+
   async getByName(permissionName: string): Promise<Permission | null> {
     const permissionData = await prismaClient.permission.findUnique({
       where: { name: permissionName}
@@ -18,6 +19,32 @@ export class PermissionRepository implements IPermissionRepository {
     if (!permissionData) return null
     const { id, name, description, created_at } = permissionData
     return new Permission(id, name, description, created_at)
+  }
+
+  async getByRole(role: Role): Promise<Permission[]> {
+    const rolePermissionData = await prismaClient.roles_permission.findMany({
+      where: {rolesId: role.id},
+      select: {permission: true}
+    })
+
+    const permissions = rolePermissionData
+      .map(objWithPermission => objWithPermission.permission)
+      .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
+    
+      return permissions
+  }
+
+  async getByUser(user: User): Promise<Permission[]> {
+    const rolesUserData = await prismaClient.user_permissions.findMany({
+      where: { userId: user.id},
+      select: { permission: true }
+    })
+
+    const permissions = rolesUserData
+      .map(objWithPermission => objWithPermission.permission)
+      .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at))
+
+    return permissions
   }
 
 }

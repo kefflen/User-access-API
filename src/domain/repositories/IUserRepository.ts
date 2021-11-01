@@ -1,3 +1,4 @@
+import { Permission, Role } from "../entities";
 import { User, UserPermissions } from "../entities/User";
 
 type createUserDTO = {
@@ -10,4 +11,6 @@ export interface IUserRepository {
   getById(id: string): Promise<User|null>
   getByEmail(email: string): Promise<User|null>
   getByIdWithPermissions(id: string): Promise<UserPermissions|null>
+  getByPermission(permission: Permission): Promise<User[]>
+  getByRole(role: Role): Promise<User[]>
 }
