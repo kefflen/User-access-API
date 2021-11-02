@@ -94,6 +94,15 @@ class RolesRepository implements IRoleRepository {
 
     return await this.getByIdWithPermissions(roleId)
   }
+
+  async allRolesIdsExist(rolesIds: string[]) {
+    const rolesOrNull: (Role|null)[] = []
+    for (let id of rolesIds) {
+      const role = await this.getById(id)
+      rolesOrNull.push(role)
+    }
+    return rolesOrNull.every(Boolean)
+  }
 }
 
 export {

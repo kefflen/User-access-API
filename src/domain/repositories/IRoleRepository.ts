@@ -9,4 +9,5 @@ export interface IRoleRepository {
   getByUser(user: User): Promise<Role[]>
   addPermissions(roleId: string, permissionsIds: string[]): Promise<RolePermissions|null>
   removePermissions(roleId: string, permissionsIds: string[]): Promise<RolePermissions|null>
+  allRolesIdsExist(rolesIds: string[]): Promise<boolean>
 }

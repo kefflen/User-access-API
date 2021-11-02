@@ -1,9 +1,10 @@
 import { prismaClient } from "../../config/primas"
 import { Permission, Role, User, UserPermissions } from "../../domain/entities"
 import { IPermissionRepository } from "../../domain/repositories/IPermissionRepository"
+import { IRoleRepository } from "../../domain/repositories/IRoleRepository"
 import { IUserRepository } from "../../domain/repositories/IUserRepository"
 import { PermissionRepository } from "./PermissionRepository"
-import { RolesRepository } from "./RolesRepository"
+import { RolesRepository } from "./rolesRepository"
 
 type CreateUserParams = {
   username: string, email: string, password: string
@@ -11,6 +12,7 @@ type CreateUserParams = {
 
 class UserRepository implements IUserRepository {
   private readonly permissionRepository: IPermissionRepository = new PermissionRepository()
+  private readonly roleRepository: IRoleRepository = new RolesRepository()
   async create({username, email, password}: CreateUserParams) {
     return await prismaClient.user.create({
       data: {
@@ -108,6 +110,29 @@ class UserRepository implements IUserRepository {
     }
 
     return await this.getByIdWithPermissions(userId)
+  }
+
+  async addRoles(userId: string, rolesIds: string[]) {
+    const everyRoleIdExist = await this.roleRepository.allRolesIdsExist(rolesIds)
+    if (!everyRoleIdExist) return null
+
+    for (let rolesId of rolesIds) {
+      await prismaClient.user_roles.create({
+        data: {rolesId, userId}
+      })
+    }
+
+    return await this.getById(userId)
+  }
+
+  async removeRoles(userId: string, rolesIds: string[]) {
+    for (let rolesId of rolesIds) {
+      await prismaClient.user_roles.delete({
+        where: { userId_rolesId: {rolesId, userId}}
+      })
+    }
+    
+    return this.getById(userId)
   }
 
   private async getPermissionsOfUserRoles(user: User, userPermissions: Permission[]) {

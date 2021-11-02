@@ -15,4 +15,6 @@ export interface IUserRepository {
   getByRole(role: Role): Promise<User[]>
   addPermissions(userId: string, permissionsIds: string[]): Promise<UserPermissions|null>
   removePermissions(userId: string, permissionsIds: string[]): Promise<UserPermissions|null>
+  addRoles(userId: string, rolesIds: string[]): Promise<User|null>
+  removeRoles(userId: string, rolesIds: string[]): Promise<User|null>
 }
