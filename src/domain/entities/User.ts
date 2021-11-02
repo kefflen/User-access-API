@@ -1,4 +1,5 @@
 import { Permission } from './Permission'
+import { Role } from './Role'
 
 export class User {
   constructor(
@@ -41,5 +42,22 @@ export class UserPermissions extends User {
   
   get permissionsNames() {
     return this.#permissions.map(permission => permission.name)
+  }
+}
+
+type completeUserParams = {
+  id: string
+  username: string
+  email: string
+  password: string
+  permissions: Permission[]
+  roles: Role[]
+}
+
+export class UserPermissionsRoles extends UserPermissions {
+  roles: Role[]
+  constructor({id, username, email, password, permissions, roles}: completeUserParams) {
+    super(id, username, email, password, permissions)
+    this.roles = roles
   }
 }

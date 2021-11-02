@@ -1,5 +1,6 @@
 import { prismaClient } from "../../config/primas"
 import { Permission, Role, User, UserPermissions } from "../../domain/entities"
+import { AppError } from "../../domain/errors/AppError"
 import { IPermissionRepository } from "../../domain/repositories/IPermissionRepository"
 import { IRoleRepository } from "../../domain/repositories/IRoleRepository"
 import { IUserRepository } from "../../domain/repositories/IUserRepository"
@@ -89,7 +90,7 @@ class UserRepository implements IUserRepository {
 
   async addPermissions(userId: string, permissionsIds: string[]) {
     const allPermissionIdsExist = await this.permissionRepository.allPermissionIdsExist(permissionsIds)
-    if (!allPermissionIdsExist) return null
+    if (!allPermissionIdsExist) throw new AppError('Not able to add permissions', 500)
 
     for (let permissionId of permissionsIds) {
       await prismaClient.user_permissions.create({
@@ -98,8 +99,6 @@ class UserRepository implements IUserRepository {
         },
       })
     }
-
-    return await this.getByIdWithPermissions(userId)
   }
 
   async removePermissions(userId: string, permissionsIds: string[]) {
@@ -108,21 +107,17 @@ class UserRepository implements IUserRepository {
         where: { userId_permissionId: {permissionId, userId}}
       })
     }
-
-    return await this.getByIdWithPermissions(userId)
   }
 
   async addRoles(userId: string, rolesIds: string[]) {
     const everyRoleIdExist = await this.roleRepository.allRolesIdsExist(rolesIds)
-    if (!everyRoleIdExist) return null
+    if (!everyRoleIdExist) throw new AppError('Not able to add roles', 500)
 
     for (let rolesId of rolesIds) {
       await prismaClient.user_roles.create({
         data: {rolesId, userId}
       })
     }
-
-    return await this.getById(userId)
   }
 
   async removeRoles(userId: string, rolesIds: string[]) {
@@ -131,8 +126,6 @@ class UserRepository implements IUserRepository {
         where: { userId_rolesId: {rolesId, userId}}
       })
     }
-    
-    return this.getById(userId)
   }
 
   private async getPermissionsOfUserRoles(user: User, userPermissions: Permission[]) {
