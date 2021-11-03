@@ -10,7 +10,6 @@ export function can(permissionsRoutes: string[]) {
 
     const user = await userRepository.getByIdWithPermissions(userId)
     if (!user) return response.status(401).send('Need to be authorized to access')
-
     const canExecute = permissionsRoutes.some(permission => user.hasPermissionName(permission))
 
     if (canExecute) {

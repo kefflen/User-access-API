@@ -5,10 +5,10 @@ import { IRoleRepository } from "../repositories/IRoleRepository";
 import { IUserRepository } from "../repositories/IUserRepository";
 
 type executeParams = {
-  username: string
+  id: string
 }
 
-export class GetPermissionsByUsernameService {
+export class GetPermissionsByUserIdService {
   getPermissionsFromUser: GetPermissionsFromUser
   constructor(
     private readonly permissionRepository: IPermissionRepository,
@@ -18,8 +18,8 @@ export class GetPermissionsByUsernameService {
     this.getPermissionsFromUser = new GetPermissionsFromUser(this.permissionRepository, this.roleRepository)
   }
 
-  async execute({ username }: executeParams) {
-    const user = await this.userRepository.getByUsername(username)
+  async execute({ id }: executeParams) {
+    const user = await this.userRepository.getById(id)
     if (!user) throw new AppError("There is no user with this usename", 404)
     return this.getPermissionsFromUser.execute(user)
   }
