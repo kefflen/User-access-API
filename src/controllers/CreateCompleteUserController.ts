@@ -3,11 +3,11 @@ import { AppError } from "../domain/errors/AppError";
 import { CreateCompleteUserService } from "../domain/services/CreateCompleteUserService";
 
 type BodyParams = {
-  email: any | undefined
-  password: any | undefined
-  username: any | undefined
-  permissions: any[] | null
-  roles: any[] | null
+  email?: any
+  password?: any
+  username?: any
+  permissions?: any[]
+  roles?: any[]
 }
 
 export class CreateCompleteUserController {
@@ -15,7 +15,7 @@ export class CreateCompleteUserController {
     private readonly createUserCompleteService: CreateCompleteUserService
   ) { }
   handle = async (request: Request, response: Response) => {
-    const { email, password, username, permissions = null, roles = null } = request.body as BodyParams
+    const { email, password, username, permissions=[], roles=[] } = request.body as BodyParams
     const validations = []
     if (!email) validations.push("Need to pass a valid email")
     if (!password) validations.push("Need to pass a valid password")

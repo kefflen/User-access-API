@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { JwtAuthToken } from "../utils/JwtAuthToken";
+import { JwtAuthToken } from "../infra/utils/JwtAuthToken";
 
 export async function ensureAutheticated(request: Request, response: Response, next: NextFunction) {
   const jwtAuthToken = new JwtAuthToken()

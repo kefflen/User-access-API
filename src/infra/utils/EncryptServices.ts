@@ -1,4 +1,4 @@
-import { IEncryptServices } from "../domain/ports/IEncryptServices";
+import { IEncryptServices } from "../../domain/ports/IEncryptServices";
 import bcryptjs from 'bcryptjs'
 export class TokenVerificator implements IEncryptServices {
   async verify(password: string, hashedPassword: string) {

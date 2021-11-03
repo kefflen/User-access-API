@@ -110,9 +110,6 @@ class UserRepository implements IUserRepository {
   }
 
   async addRoles(userId: string, rolesIds: string[]) {
-    const everyRoleIdExist = await this.roleRepository.allRolesIdsExist(rolesIds)
-    if (!everyRoleIdExist) throw new AppError('Not able to add roles', 500)
-
     for (let rolesId of rolesIds) {
       await prismaClient.user_roles.create({
         data: {rolesId, userId}
