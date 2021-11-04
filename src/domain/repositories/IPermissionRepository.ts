@@ -6,4 +6,5 @@ export interface IPermissionRepository {
   getByRole(role: Role): Promise<Permission[]>
   getByUser(user: User): Promise<Permission[]>
   allPermissionIdsExist(permissionsIds: string[]): Promise<boolean>
+  getPermissions(offset: number, limit: number): Promise<Permission[]>
 }

@@ -55,4 +55,14 @@ export class PermissionRepository implements IPermissionRepository {
       .map(objWithPermission => objWithPermission.permission)
       .map(permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at));
   }
+
+  async getPermissions(offset: number, limit: number) {
+    const permissionsData = await prismaClient.permission.findMany({
+      take: limit, skip: offset
+    })
+
+    return permissionsData.map(
+      permissionData => new Permission(permissionData.id, permissionData.name, permissionData.description, permissionData.created_at)
+    )
+  }
 }
